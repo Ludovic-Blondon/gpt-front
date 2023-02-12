@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { Input } from 'antd';
-
+import React, { useEffect, useState } from "react";
+import { Input, message } from 'antd';
 export default function Chat() {
 
     const [value, setValue] = useState('');
     const [messages, setMessages] = useState([]);
+    const [messageApi, contextHolder] = message.useMessage();
+    const opanAiKey = process.env.REACT_APP_OPENAI_API_KEY
+
+    console.log(opanAiKey)
 
     const onChange = (e) => {
         setValue(e.target.value);
@@ -14,13 +17,21 @@ export default function Chat() {
         setMessages(messages => [...messages, { author: 'me', content: e.target.value, sendAt: new Date() }]);
         setValue('');
         const result = await getResponse(value);
-        setMessages(messages => [...messages, { author: 'his', content: result.choices[0].text, sendAt: new Date() }]);
+        console.log(result)
+        if (result.error) {
+            messageApi.open({
+                type: 'error',
+                content: result.error.message
+            })
+        } else if (result.choices.length) {
+            setMessages(messages => [...messages, { author: 'his', content: result.choices[0].text, sendAt: new Date() }]);
+        }
     }
 
     const getResponse = async (value) => {
         try {
             const myHeaders = new Headers();
-            myHeaders.append("Authorization", "Bearer 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");
+            myHeaders.append("Authorization", `Bearer ${opanAiKey}`);
             myHeaders.append("Content-Type", "application/json");
 
             const raw = JSON.stringify({
@@ -41,13 +52,16 @@ export default function Chat() {
 
             return response.json();
         } catch (error) {
-            return error;
+            messageApi.open({
+                type: 'error',
+                content: error
+            });
         }
     }
 
     return (
         <div className="chat_container">
-
+            {contextHolder}
             <Input
                 placeholder="Demandez moi ce que vous voulez"
                 allowClear onChange={onChange}
