@@ -1,13 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Input, message } from 'antd';
+
 export default function Chat() {
 
     const [value, setValue] = useState('');
     const [messages, setMessages] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
-    const opanAiKey = process.env.REACT_APP_OPENAI_API_KEY
+    const opanAiKey = process.env.REACT_APP_OPENAI_API_KEY;
 
-    console.log(opanAiKey)
+    const messagesContainer = useCallback((node) => {
+        if (node !== null) {
+            const scrollingElement = document.getElementById('test');
+            const config = { childList: true };
+
+            const callback = (mutationsList) => {
+                for (const mutation of mutationsList) {
+                    if (mutation.type === 'childList') {
+                        scrollingElement.scrollTo(0, scrollingElement.scrollHeight);
+                    }
+                }
+            };
+
+            const observer = new MutationObserver(callback);
+            observer.observe(scrollingElement, config);
+        }
+    }, [])
 
     const onChange = (e) => {
         setValue(e.target.value);
@@ -62,14 +79,8 @@ export default function Chat() {
     return (
         <div className="chat_container">
             {contextHolder}
-            <Input
-                placeholder="Demandez moi ce que vous voulez"
-                allowClear onChange={onChange}
-                onPressEnter={handleSend}
-                value={value}
-            />
 
-            <div className="messages_container">
+            <div className="messages_container" id="test" ref={messagesContainer}>
                 {messages.map((message, index) => (
                     <div key={index} className={`message_chat ${message.author}`}>
                         <div className="message_chat_text">
@@ -78,6 +89,13 @@ export default function Chat() {
                     </div>
                 ))}
             </div>
+
+            <Input
+                placeholder="Demandez moi ce que vous voulez"
+                allowClear onChange={onChange}
+                onPressEnter={handleSend}
+                value={value}
+            />
         </div>
     )
 }

@@ -5,8 +5,6 @@ import Chat from './component/Chat';
 const { Header, Content, Footer } = Layout;
 
 function App() {
-
-
     return (
         <div className="App">
             <ConfigProvider
@@ -25,7 +23,7 @@ function App() {
 
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>Ant Design ©2023 Created by Ant UED</Footer>
+                    <Footer style={{ textAlign: 'center' }}>monsieurjesaistout ©2023 Created by Ludovic Blondon</Footer>
                 </Layout>
             </ConfigProvider>
         </div>
