@@ -1,12 +1,15 @@
 import React, { useCallback, useState } from "react";
-import { Input, message } from 'antd';
+import { Input, message, Spin } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+
+const opanAiKey = process.env.REACT_APP_OPENAI_API_KEY;
 
 export default function Chat() {
 
     const [value, setValue] = useState('');
     const [messages, setMessages] = useState([]);
     const [messageApi, contextHolder] = message.useMessage();
-    const opanAiKey = process.env.REACT_APP_OPENAI_API_KEY;
+    const [loading, setLoading] = useState(false);
 
     const messagesContainer = useCallback((node) => {
         if (node !== null) {
@@ -31,10 +34,11 @@ export default function Chat() {
     }
 
     const handleSend = async (e) => {
+        setLoading(true);
         setMessages(messages => [...messages, { author: 'me', content: e.target.value, sendAt: new Date() }]);
         setValue('');
         const result = await getResponse(value);
-        console.log(result)
+
         if (result.error) {
             messageApi.open({
                 type: 'error',
@@ -43,6 +47,8 @@ export default function Chat() {
         } else if (result.choices.length) {
             setMessages(messages => [...messages, { author: 'his', content: result.choices[0].text, sendAt: new Date() }]);
         }
+
+        setLoading(false);
     }
 
     const getResponse = async (value) => {
@@ -76,6 +82,8 @@ export default function Chat() {
         }
     }
 
+    const loadingIcon = <LoadingOutlined style={{ fontSize: 16, color: 'white' }} spin />;
+
     return (
         <div className="chat_container">
             {contextHolder}
@@ -88,6 +96,12 @@ export default function Chat() {
                         </div>
                     </div>
                 ))}
+
+                {loading && <div className="message_chat his">
+                    <div className="message_chat_text">
+                        <Spin indicator={loadingIcon} />
+                    </div>
+                </div>}
             </div>
 
             <Input

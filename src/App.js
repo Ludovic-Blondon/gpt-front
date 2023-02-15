@@ -2,7 +2,9 @@ import 'antd/dist/reset.css';
 import './App.css';
 import { ConfigProvider, theme, Layout } from 'antd';
 import Chat from './component/Chat';
+
 const { Header, Content, Footer } = Layout;
+const year = new Date().getFullYear();
 
 function App() {
     return (
@@ -23,7 +25,9 @@ function App() {
 
                         </div>
                     </Content>
-                    <Footer style={{ textAlign: 'center' }}>monsieurjesaistout ©2023 Created by Ludovic Blondon</Footer>
+                    <Footer style={{ textAlign: 'center', fontWeight: 'bold' }}>
+                        <strong>monsieurjesaistout</strong> ©{year} Created by Ludovic Blondon <strong>Use ChatGPT</strong>
+                    </Footer>
                 </Layout>
             </ConfigProvider>
         </div>

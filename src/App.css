@@ -1,6 +1,7 @@
 .layout {
   min-height: 100vh;
 }
+
 .ant-layout-content {
   display: flex;
   justify-content: center;
@@ -59,9 +60,9 @@
 }
 
 .message_chat.his .message_chat_text {
-  background-color: royalblue;
+  background-color: rgba(65, 105, 225, .9);
 }
 
 .message_chat.me .message_chat_text {
-  background-color: dodgerblue;
+  background-color: rgba(30, 144, 255, .9);
 }
